@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+  <link rel="icon" href="images/icon.png" type="image/x-icon"/>
+<title>幸福聊天室</title>
+<script type="text/javascript" src="javascripts/jquery.min.js"></script>
+<script type="text/javascript" src="javascripts/jquery.cookie.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="javascripts/chat.js?t=001"></script>
+  <script>
+      function triggle(event){
+          if(event.keyCode==13){
+              $("#say").click()
+          }
+      }
+      function search(){
+          var serachKey = $(".search-content").val();
+          var arrt = $("#userList").val().split(",");
+          var arr = [];
+          arrt.forEach(function(i){
+              arr.push(i.split(":")[0])
+          })
+          var newarr = [];
+          arr.forEach(function(j){
+              if(j.indexOf(serachKey)!=-1){
+                  newarr.push(j);
+              }
+          })
+          console.log("newarr")
+
+      }
+  </script>
+<style>
+  body{float:left;position: absolute;width:99%;height:98%;}
+  #contain{position: absolute;float: left;width:860px;height:600px;border:1px solid #f0f0f0;top:50%;left:50%;margin-left:-464px;margin-top:-310px;background:#f5f5f5;box-shadow:1px 1px 1px 1px #f0f0f0;}
+  .left{width:60px;background:#28282b;height:100%;float:left;}
+  .center{width:250px;background:#e8e7e6;height:100%;float:left;}
+  .right{overflow: hidden;}
+  .shake{
+    -webkit-animation-name: shake;
+    -webkit-animation-duration: 0.2s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: 100;
+  }
+  @-webkit-keyframes shake{
+    0%{
+      transform: translateX(5px) translateY(2px) ;
+    }
+    10%{
+      transform: translateX(0px) translateY(0px) ;
+    }
+    20%{
+      transform: translateX(-5px) translateY(-2px);
+    }
+    30%{
+      transform: translateX(0px) translateY(0px);
+    }
+    40%{
+      transform: translateX(5px) translateY(2px);
+    }
+    50%{
+      transform: translateX(0px) translateY(0px);
+    }
+    60%{
+      transform: translateX(-5px) translateY(-2px);
+    }
+    70%{
+      transform: translateX(0px) translateY(0px);
+    }
+    80%{
+      transform: translateX(5px) translateY(2px);
+    }
+    90%{
+      transform: translateX(0px) translateY(0px);
+    }
+    100%{
+      transform: translateX(-5px) translateX(-2px);
+    }
+  }
+  /*left  */
+  .left img{width:37px;border-radius:3px;display: block;margin:20px auto}
+  /*right*/
+  .center-header,.right-header{font-size:20px;padding:20px;height:25px;border-bottom-style: solid;border-bottom-width:1px;border-bottom-color:#e7e7e7}
+  .right-header span{text-align:left;}
+  .right-content{position:relative;overflow:auto;padding-left:25px;height:410px;border-bottom-style: solid;border-bottom-width:1px;border-bottom-color:#e7e7e7}
+  .right-content::-webkit-scrollbar{width:8px;height:8px;background-color:transparent}
+  /*定义滚动条的轨道，内阴影及圆角*/
+  .right-content:hover::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);
+    border-radius: 5px;
+    background-color: #f5f5f5;
+  }
+  /*定义滑块，内阴影及圆角*/
+  .right-content:hover::-webkit-scrollbar-thumb{
+    /*width: 10px;*/
+    height: 20px;
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);
+    background-color: #555;
+  }
+  /*.right-content:hover::-webkit-scrollbar{background-color:red}*/
+  .right-footer{padding-left:20px;margin-top:2px}
+  #right-footer-send-content{padding-top:40px;padding-left:10px;margin-left:-20px;height:80px;margin-top:-38px;border:none;background: none}
+  #say{cursor:pointer;float:right;margin-top:-35px;margin-right:10px;background: #f0f0f0;border:1px solid #e7e7e7;height:28px;width:50px;padding:3px}
+  #say:hover{background:#3dce3d;color:#fff}
+  .right-footer-icon{opacity: 1}
+  .right-icon{display: inline-block;color:#c9c6c6;font-size:20px;width:20px;padding: 7px 15px;
+    margin-top: -4px;}
+  .right-icon:hover{background:#e8e7e6}
+  .icon-emotion:before{content:"\263A";font-size:17px}
+  .icon-shake:before {content: "\2622";}
+  .icon-shortcut:before {content: "\2704 ";}
+
+  .system-tip{font-size:12px;color:#ccc;height:20px;padding:5px;clear: both}
+  .icon{position:relative;top:3px;width:16px;height:16px;display:inline-block;}
+  .icon-close{background: url(/images/close.PNG);}
+  .icon-open{background: url(/images/open.PNG);}
+  .icon-online{background: url(/images/online.PNG);}
+  .icon-offline{background: url(/images/offline.PNG);}
+  .icon-welcome{background: url(/images/welcome.PNG);}
+  .online-tip{font-size:13px;color:red;height:20px;padding:5px;clear: both}
+  .shake-tip{font-size:13px;color:#f0ad4e;height:20px;padding:5px;clear: both}
+  .icon-shake-tip{background: url(/images/shake.PNG);}
+  .offline-tip{font-size:13px;color:#ccc;height:20px;padding:5px;clear: both}
+  .welcome-tip{font-size:13px;color:#3dce3d;height:20px;padding:5px;clear: both}
+  .content-tip-from{margin-right:20px;font-szie:14px;color:#fff;border-radius:5px;padding:10px;display:block;margin-bottom:10px;float:right;background:#3dce3d;max-width:360px}
+  .content-tip-to{border:1px solid #f0f0f0;font-szie:14px;color:#ccc;border-radius:5px;padding:10px;display:block;margin-bottom:10px;float:left;background:#fff;max-width:360px}
+  .message{font-size:13px;color:#333}
+  .messgae div{display: inline-block}
+  .messgae-img{position: relative;top:6px;padding-left:5px;padding-right:10px}
+  /*center*/
+  #list{padding-left:0px;margin:0px;position:relative;overflow: auto}
+  #list li{cursor:pointer;padding:5px;height:50px;line-height:50px;list-style: none;border:1px solid transparent;text-align: center}
+  #list li:hover{background: #dedcdb}
+  .list-li{background: #c9c6c6}
+  .center-header input{width:190px;background:#e5e3e2;border:1px solid #dad7d6;height:20px;padding-left:6px;font-size:12px;}
+  .center-header input:focus{background:#f0f0f0;}
+  .icon-search{background: url(/images/search.PNG);width:16px;height:16px;display:inline-block;position:relative;top: -20px;  left: -24px;float: right;}
+  .emotion-lib{display: none;width:240px;height:211.8px;background:#fff;position:absolute;top: 265px;left: 311px;}
+  .emotion-lib img{width:22.25px;height:22.25px;border:1px solid #ddd;
+    float: left;padding: 3px 5px;}
+  .emotion-lib img:hover{border:1px solid darkblue}
+</style>
+</head>
+<body>
+
+<input type="hidden" id="userList" value="22222"/>
+  <div id="contain">
+    <div class="left">
+      <img src="images/wxfei.jpg" alt="" />
+    </div>
+
+    <div class="center">
+      <header class="center-header">
+        <input type="text" class="search-content" placeholder="搜索" onchange="search()"/><i class="icon-search"></i>
+      </header>
+      <div class="center-content">
+        <ul id="list">
+        </ul>
+      </div>
+    </div>
+
+    <div class="right">
+      <header class="right-header">
+        <span>所有人</span>
+      </header>
+      <div class="right-content" id="contents">
+      </div>
+      <div class="right-footer">
+        <div class="right-footer-icon">
+
+          <div class="right-icon icon-emotion" title="表情包"></div>
+          <div class="emotion-lib"></div>
+          <div class="right-icon icon-shake" title="给好友发送窗口抖动"></div>
+          <div class="right-icon icon-shortcut" title="截屏"></div>
+        </div>
+        <div id="right-footer-send-content" contenteditable="true" onkeydown="triggle(event)"></div>
+        <button id="say">发送</button>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
